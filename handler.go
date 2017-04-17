@@ -361,5 +361,7 @@ func handleGitterAuthorize(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 	//user and redirect_url must be set here.
-	http.Redirect(w, r, url, http.StatusFound)
+
+	RespError(w, ErrorNewMsg(ErrCodeActionNotSupport, url))
+	// http.Redirect(w, r, url, http.StatusFound)
 }
