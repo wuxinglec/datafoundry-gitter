@@ -92,7 +92,7 @@ func loadGitHubToken(store Storage, user string) *oauth2.Token {
 }
 
 func saveGitHubToken(store Storage, user string, tok *oauth2.Token) error {
-	clog.Debug("saveGitHubToken interface")
+	// clog.Debug("saveGitHubToken interface")
 	return store.SaveTokenGithub(user, tok)
 }
 
