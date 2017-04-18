@@ -21,7 +21,7 @@ func handleGitHubCallback(w http.ResponseWriter, r *http.Request, _ httprouter.P
 		return
 	}
 
-	clog.Debugf("save hub access token '%v'@'%v'", user, token.AccessToken)
+	clog.Debug("save hub access token '%v'@'%v'", user, token)
 	if err := saveGitHubToken(store, user, token); err != nil {
 		clog.Error("save github token error:", err)
 	}
@@ -42,7 +42,7 @@ func handleGitLabCallback(w http.ResponseWriter, r *http.Request, _ httprouter.P
 		return
 	}
 
-	clog.Debugf("save lab access token '%v'@'%v'", user, token.AccessToken)
+	clog.Debug("save lab access token '%v'@'%v'", user, token)
 	if err := saveGitLabToken(store, user, token); err != nil {
 		clog.Error("save gitlab token error:", err)
 	}
