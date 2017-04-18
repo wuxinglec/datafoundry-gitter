@@ -18,6 +18,7 @@ func githubUserAuthTokenKey(user string) string {
 	return "gitter://github/oauthtoken/" + user
 }
 func webhookKey(key string) string {
+	// key = ns + '/' + user
 	return "gitter://webhook/" + key
 }
 func gitlabUserSecretKey(namespace, user string) string {

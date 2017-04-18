@@ -364,5 +364,6 @@ func handleGitterAuthorize(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	// RespError(w, ErrorNewMsg(ErrCodeActionNotSupport, url))
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	http.Redirect(w, r, url, http.StatusFound)
 }
