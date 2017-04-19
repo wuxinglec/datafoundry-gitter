@@ -79,13 +79,19 @@ func genRespJSON(err error) *APIResponse {
 		if e, ok := err.(*ErrorMessage); ok {
 			resp.Code = e.Code
 			resp.status = trickCode2Status(resp.Code) //http.StatusBadRequest
+			// TODO is this OK?
+			{
+				if resp.status == http.StatusForbidden || resp.status == http.StatusUnauthorized {
+					resp.status = http.StatusBadRequest
+				}
+			}
 			resp.Message = e.Message
 		} else if e, ok := err.(*StatusError); ok {
 			resp.Code = int(e.ErrStatus.Code)
 
-			// frontend can't handle 403, he will panic...
+			// frontend can't handle 403/401, he will panic...
 			{
-				if resp.Code == http.StatusForbidden {
+				if resp.Code == http.StatusForbidden || resp.Code == http.StatusUnauthorized {
 					resp.Code = http.StatusBadRequest
 				}
 			}
