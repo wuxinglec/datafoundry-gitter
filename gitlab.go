@@ -309,7 +309,7 @@ func (lab *GitLab) CreateSecret(ns, name string) (*Secret, error) {
 	secret.Ns = ns
 	secret.Available = true
 
-	store.SaveSecretGithub(lab.User(), ns, secret)
+	store.SaveSecretGitlab(lab.User(), ns, secret)
 	clog.Debugf("%#v,%#v", ksecret, secret)
 
 	return secret, nil
