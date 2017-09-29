@@ -291,6 +291,32 @@ func (lab *GitLab) generateSSHeKeyPair() (*SSHKey, error) {
 
 func (lab *GitLab) CreateSecret(ns, name string) (*Secret, error) {
 	token := lab.GetBearerToken()
+
+	dfClient := NewDataFoundryTokenClient(token)
+
+	data := make(map[string]string)
+	data["password"] = lab.GetOauthToken()
+
+	ksecret, err := dfClient.CreateSecret(ns, name, data)
+	if err != nil {
+		clog.Error(err)
+		return nil, err
+	}
+
+	secret := new(Secret)
+	secret.User = lab.User()
+	secret.Secret = ksecret.Name
+	secret.Ns = ns
+	secret.Available = true
+
+	store.SaveSecretGitlab(lab.User(), ns, secret)
+	clog.Debugf("%#v,%#v", ksecret, secret)
+
+	return secret, nil
+}
+
+func (lab *GitLab) CreateSecretWithSSHKey(ns, name string) (*Secret, error) {
+	token := lab.GetBearerToken()
 	dfClient := NewDataFoundryTokenClient(token)
 
 	key, err := store.LoadSSHKeyGitlab(lab.User())
