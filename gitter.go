@@ -124,7 +124,7 @@ func newLabGitter(user string) (Gitter, error) {
 func newHubGitter(user string) (Gitter, error) {
 	tok := loadGitHubToken(store, user)
 	if tok == nil {
-		errStr := fmt.Sprintf("can't load gitlab token for user %v, need redirect to authorize.", user)
+		errStr := fmt.Sprintf("can't load github token for user %v, need redirect to authorize.", user)
 		clog.Error(errStr)
 		return nil, errors.New(errStr)
 	}
