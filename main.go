@@ -53,6 +53,8 @@ func main() {
 
 func init() {
 
+	clog.Info("starting gitter, VERSION:", version)
+
 	dataFoundryHostAddr = os.Getenv("DATAFOUNDRY_API_SERVER")
 	if len(dataFoundryHostAddr) == 0 {
 		clog.Fatal("DATAFOUNDRY_API_SERVER must be specified.")
@@ -76,7 +78,7 @@ func init() {
 
 			redisStorager = NewRedisKeyValueStorager(
 				words[0]+":"+words[1],
-				"", // blank clusterName means no sentinel servers
+				"",                           // blank clusterName means no sentinel servers
 				strings.Join(words[2:], "+"), // password
 
 			)
