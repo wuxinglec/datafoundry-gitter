@@ -46,7 +46,7 @@ func NewGitLab(tok *oauth2.Token) *GitLab {
 	clog.Debug("token:", tok.AccessToken)
 
 	client := gitlab.NewOAuthClient(oauthClient, tok.AccessToken)
-	client.SetBaseURL(gitlabBaseURL + "/api/v3")
+	client.SetBaseURL(gitlabBaseURL)
 
 	lab.client = client
 	lab.oauthtoken = tok.AccessToken
@@ -68,7 +68,9 @@ func (lab *GitLab) ListPersonalRepos(cache bool) *[]Repositories {
 
 	var allRepos []*gitlab.Project
 
+	membership := true
 	opt := &gitlab.ListProjectsOptions{
+		Membership:  &membership,
 		ListOptions: gitlab.ListOptions{PerPage: 30},
 	}
 
@@ -131,16 +133,35 @@ func (lab *GitLab) ListPersonalRepos(cache bool) *[]Repositories {
 func (lab *GitLab) ListOrgRepos(org string) { clog.Debug("called.") }
 
 func (lab *GitLab) ListBranches(owner, repo string) *[]Branch {
-	branches, resp, err := lab.client.Branches.ListBranches(repo)
-	_ = resp
-	if err != nil {
-		clog.Error(err)
-		return nil
+
+	var allBranches []*gitlab.Branch
+	opt := &gitlab.ListBranchesOptions{PerPage: 30}
+
+	for {
+		branches, resp, err := lab.client.Branches.ListBranches(repo, opt)
+		if err != nil {
+			clog.Error(err)
+			return nil
+		}
+		allBranches = append(allBranches, branches...)
+		if resp.NextPage == 0 {
+			break
+		}
+		opt.Page = resp.NextPage
+		clog.Debugf("fetch next %v repos, page %v\n", opt.PerPage, resp.NextPage)
 	}
-	clog.Debugf("total %v branches.", len(branches))
+	clog.Debugf("Total %d branches.\n", len(allBranches))
+
+	// branches, resp, err := lab.client.Branches.ListBranches(repo, opt)
+	// _ = resp
+	// if err != nil {
+	// 	clog.Error(err)
+	// 	return nil
+	// }
+	// clog.Debugf("total %v branches.", len(branches))
 
 	labBranches := new([]Branch)
-	for _, v := range branches {
+	for _, v := range allBranches {
 		branch := new(Branch)
 		branch.Name = v.Name
 		branch.CommitID = v.Commit.ID

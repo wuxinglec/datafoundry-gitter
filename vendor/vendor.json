@@ -33,10 +33,10 @@
 			"revisionTime": "2016-08-10T19:53:38Z"
 		},
 		{
-			"checksumSHA1": "tVac3wUT6lU95mno5Xb1xXpm5no=",
+			"checksumSHA1": "m3QwC97ECMhe3qJfYv99KbOyLYg=",
 			"path": "github.com/xanzy/go-gitlab",
-			"revision": "442ae38dfd2f6a1e94d5f384bb6df1784395e732",
-			"revisionTime": "2017-03-03T19:43:12Z"
+			"revision": "954568c5d9242be1fb907039d769952fa4f6bc70",
+			"revisionTime": "2018-11-15T15:56:39Z"
 		},
 		{
 			"checksumSHA1": "AqhUBWm7JCj44y1Fz7bdDWSqPq8=",
@@ -87,5 +87,5 @@
 			"revisionTime": "2016-08-24T22:40:36Z"
 		}
 	],
-	"rootPath": "github.com/asiainfoLDP/datafoundry-gitter"
+	"rootPath": "github.com/asiainfoldp/datafoundry-gitter"
 }
