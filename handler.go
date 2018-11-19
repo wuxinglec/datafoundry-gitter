@@ -105,7 +105,12 @@ func handleRepos(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	// repos := gitter.ListPersonalRepos(user)
 	repos := listPersonalRepos(gitter, cache)
-	RespOK(w, repos)
+	if repos == nil {
+		clog.Info("repos return nil, may be token was revoked.")
+		RespError(w, ErrorNew(ErrCodeUnauthorized))
+	} else {
+		RespOK(w, repos)
+	}
 }
 
 func handleRepoBranches(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -366,4 +371,36 @@ func handleGitterAuthorize(w http.ResponseWriter, r *http.Request, ps httprouter
 	// w.Header().Set("Access-Control-Allow-Origin", "*")
 	// w.Header().Set("Access-Control-Allow-Methods", "GET")
 	// http.Redirect(w, r, url, http.StatusFound)
+}
+
+func handleRevokeOauth(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	clog.Info("from", r.RemoteAddr, r.Method, r.URL.RequestURI(), r.Proto)
+
+	source := ps.ByName("source")
+	user := r.Header.Get("user")
+
+	var gitter Gitter
+	var err error
+
+	switch source {
+	case "github":
+		gitter, err = newHubGitter(user)
+		if err != nil {
+			// http.Redirect(w, r, "/authorize/github", http.StatusFound)
+			RespError(w, ErrorNew(ErrCodeUnauthorized))
+			return
+		}
+	case "gitlab":
+		gitter, err = newLabGitter(user)
+		if err != nil {
+			// http.Redirect(w, r, "/authorize/gitlab", http.StatusFound)
+			RespError(w, ErrorNew(ErrCodeUnauthorized))
+			return
+		}
+	default:
+		RespError(w, ErrorNew(ErrCodeNotFound))
+		return
+	}
+
+	_ = gitter
 }
