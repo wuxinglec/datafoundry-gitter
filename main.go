@@ -33,6 +33,8 @@ func main() {
 
 	router.GET("/repos/:source/secret", authorize(handleSecret))
 
+	router.DELETE("/repos/:source/revoke", authorize(handleRevokeOauth))
+
 	router.GET("/repos/:source/webhook", authorize(handleCheckWebhook))
 	router.POST("/repos/:source/webhook", authorize(handleCreateWebhook))
 	router.DELETE("/repos/:source/webhook/:hookid", authorize(handleRemoveWebhook))
