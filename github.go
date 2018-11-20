@@ -161,9 +161,33 @@ func (hub *GitHub) ListBranches(owner, repo string) *[]Branch {
 }
 
 func (hub *GitHub) ListTags(owner, repo string) *[]Tag {
+	var allTags []*github.RepositoryTag
+	opt := &github.ListOptions{PerPage: 30}
+	for {
+		tags, resp, err := hub.client.Repositories.ListTags(owner, repo, opt)
+		if err != nil {
+			clog.Error(err)
+			return nil
+		}
+		allTags = append(allTags, tags...)
+		if resp.NextPage == 0 {
+			break
+		}
+		opt.Page = resp.NextPage
+		fmt.Printf("fetch next %v tags, page %v\n", opt.PerPage, resp.NextPage)
+	}
 
-	clog.Debug("called.")
-	return nil
+	clog.Debugf("Total %d tags.\n", len(allTags))
+
+	var hubTags []Tag
+	for _, v := range allTags {
+		var tag Tag
+		tag.Name = *v.Name
+		tag.CommitID = *v.Commit.SHA
+		hubTags = append(hubTags, tag)
+	}
+
+	return &hubTags
 }
 func (hub *GitHub) CreateWebhook(hook *WebHook) *WebHook {
 
