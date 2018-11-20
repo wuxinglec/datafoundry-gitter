@@ -30,6 +30,7 @@ func main() {
 
 	router.GET("/repos/:source", authorize(handleRepos))
 	router.GET("/repos/:source/branches", authorize(handleRepoBranches))
+	router.GET("/repos/:source/tags", authorize(handleRepoTags))
 
 	router.GET("/repos/:source/secret", authorize(handleSecret))
 
@@ -80,7 +81,7 @@ func init() {
 
 			redisStorager = NewRedisKeyValueStorager(
 				words[0]+":"+words[1],
-				"",                           // blank clusterName means no sentinel servers
+				"", // blank clusterName means no sentinel servers
 				strings.Join(words[2:], "+"), // password
 
 			)

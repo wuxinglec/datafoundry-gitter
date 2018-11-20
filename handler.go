@@ -158,7 +158,51 @@ func handleRepoBranches(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 	RespOK(w, branches)
 
 }
+func handleRepoTags(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	clog.Info("from", r.RemoteAddr, r.Method, r.URL.RequestURI(), r.Proto)
+	source := ps.ByName("source")
+	user := r.Header.Get("user")
 
+	var gitter Gitter
+	var err error
+	var ns, repo string
+
+	switch source {
+	case "github":
+		gitter, err = newHubGitter(user)
+		if err != nil {
+			// http.Redirect(w, r, "/authorize/github", http.StatusFound)
+			RespError(w, ErrorNew(ErrCodeUnauthorized))
+			return
+		}
+		ns, repo = r.FormValue("ns"), r.FormValue("repo")
+		if len(ns) == 0 || len(repo) == 0 {
+			RespError(w, ErrorNewMsg(ErrCodeBadRequest, "ns or repo empty"))
+			return
+		}
+	case "gitlab":
+		gitter, err = newLabGitter(user)
+		if err != nil {
+			// http.Redirect(w, r, "/authorize/gitlab", http.StatusFound)
+			RespError(w, ErrorNew(ErrCodeUnauthorized))
+			return
+		}
+		repo = r.FormValue("id")
+		if len(repo) == 0 {
+			RespError(w, ErrorNewMsg(ErrCodeBadRequest, "id empty"))
+			return
+		}
+	default:
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte(http.StatusText(http.StatusNotFound)))
+		return
+	}
+
+	// branches := git.ListBranches(ns, repo)
+	tags := listTags(gitter, ns, repo)
+	RespOK(w, tags)
+
+}
 func handleSecret(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	source := ps.ByName("source")

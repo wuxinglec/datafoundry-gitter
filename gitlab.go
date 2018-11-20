@@ -172,7 +172,36 @@ func (lab *GitLab) ListBranches(owner, repo string) *[]Branch {
 
 }
 
-func (lab *GitLab) ListTags(owner, repo string) { clog.Debug("called.") }
+func (lab *GitLab) ListTags(owner, repo string) *[]Tag {
+	var allTags []*gitlab.Tag
+	opt := &gitlab.ListTagsOptions{ListOptions: gitlab.ListOptions{PerPage: 30}}
+
+	for {
+		tags, resp, err := lab.client.Tags.ListTags(repo, opt)
+		if err != nil {
+			clog.Error(err)
+			return nil
+		}
+		allTags = append(allTags, tags...)
+		if resp.NextPage == 0 {
+			break
+		}
+		opt.Page = resp.NextPage
+		clog.Debugf("fetch next %v repos, page %v\n", opt.PerPage, resp.NextPage)
+	}
+	clog.Debugf("Total %d tags.\n", len(allTags))
+
+	labTags := new([]Tag)
+	for _, v := range allTags {
+		tag := new(Tag)
+		tag.Name = v.Name
+		tag.CommitID = v.Commit.ID
+		*labTags = append(*labTags, *tag)
+	}
+
+	return labTags
+
+}
 func (lab *GitLab) CreateWebhook(hook *WebHook) *WebHook {
 	clog.Debugf("hook info: %#v", hook)
 

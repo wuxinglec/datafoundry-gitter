@@ -10,7 +10,7 @@ type Gitter interface {
 	ListPersonalRepos(cache bool) *[]Repositories
 	ListOrgRepos(org string)
 	ListBranches(owner, repo string) *[]Branch
-	ListTags(owner, repo string)
+	ListTags(owner, repo string) *[]Tag
 	CreateWebhook(hook *WebHook) *WebHook
 	RemoveWebhook(ns, bc string, id int) error
 	CheckWebhook(ns, bc string) *WebHook

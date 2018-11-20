@@ -160,7 +160,11 @@ func (hub *GitHub) ListBranches(owner, repo string) *[]Branch {
 	return hubBranches
 }
 
-func (hub *GitHub) ListTags(owner, repo string) { clog.Debug("called.") }
+func (hub *GitHub) ListTags(owner, repo string) *[]Tag {
+
+	clog.Debug("called.")
+	return nil
+}
 func (hub *GitHub) CreateWebhook(hook *WebHook) *WebHook {
 
 	clog.Debugf("hook info: %#v", hook)

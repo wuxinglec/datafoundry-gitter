@@ -24,9 +24,9 @@ func listBranches(gitter Gitter, owner, repo string) *[]Branch {
 	return gitter.ListBranches(owner, repo)
 }
 
-func listTags(gitter Gitter, owner, repo string) {
+func listTags(gitter Gitter, owner, repo string) *[]Tag {
 	clog.Debug("listTags interface")
-	gitter.ListTags(owner, repo)
+	return gitter.ListTags(owner, repo)
 }
 
 func createWebhook(gitter Gitter, ns, bc string, hook *WebHook) *WebHook {
