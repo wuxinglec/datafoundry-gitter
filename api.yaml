@@ -1,0 +1,389 @@
+swagger: "2.0"
+info:
+  description: "df-gitter api"
+  version: "1.0.0"
+  title: "Datafoundry Gitter Api"
+  #termsOfService: "http://swagger.io/terms/"
+  #contact:
+    #email: "apiteam@swagger.io"
+  #license:
+    #name: "Apache 2.0"
+    #url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+#host: "petstore.swagger.io"
+basePath: "/v1"
+tags:
+- name: "authorize"
+  description: "授权"
+- name: "repos"
+  description: "获取gitlab或github资源"
+
+schemes:
+- "https"
+- "http"
+paths:
+  /authorize/{source}:
+    get:
+      tags:
+      - "authorize"
+      summary: "查询授权"
+      description: ""
+      operationId: "authorize"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "source"
+        in: "path"
+        description: "gitlab或者github授权"
+        required: true
+        type: "string"
+      responses:
+        400:
+          description: "跳转授权"
+          schema:
+            $ref: "#/definitions/Error"
+  /repos/{source}:
+    get:
+      tags:
+      - "repos"
+      summary: "获取仓库"
+      description: ""
+      operationId: "获取仓库"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "source"
+        in: "path"
+        description: "gitlab或者github"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "获取仓库"
+          schema:
+            $ref: "#/definitions/repolist"
+        400:
+          description: "获取失败"
+          schema:
+            $ref: "#/definitions/Error"    
+  /repos/{source}/branches:
+    get:
+      tags:
+      - "repos"
+      summary: "获取分支"
+      description: ""
+      operationId: "获取分支"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "source"
+        in: "path"
+        description: "gitlab或者github"
+        required: true
+        type: "string"
+      - name: "ns"
+        in: "query"
+        description: "namespace"
+        required: true
+        type: "string"
+      - name: "repo"
+        in: "query"
+        description: "仓库名"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "query"
+        description: "仓库id"
+        required: true
+        type: "integer"
+        format: "int32"  
+      responses:
+        200:
+          description: "获取分支"
+          schema:
+            $ref: "#/definitions/branchlist"
+        400:
+          description: "获取失败"
+          schema:
+            $ref: "#/definitions/Error"              
+  /repos/{source}/tag:
+    get:
+      tags:
+      - "repos"
+      summary: "获取版本"
+      description: ""
+      operationId: "获取版本"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "source"
+        in: "path"
+        description: "gitlab或者github"
+        required: true
+        type: "string"
+      - name: "ns"
+        in: "query"
+        description: "namespace"
+        required: true
+        type: "string"
+      - name: "repo"
+        in: "query"
+        description: "仓库名"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "query"
+        description: "仓库id"
+        required: true
+        type: "integer"
+        format: "int32"  
+      responses:
+        200:
+          description: "获取分支"
+          schema:
+            $ref: "#/definitions/branchlist"
+        400:
+          description: "获取失败"
+          schema:
+            $ref: "#/definitions/Error"                        
+  /repos/{source}/secret:
+    get:
+      tags:
+      - "repos"
+      summary: "获取仓库密钥"
+      description: ""
+      operationId: "获取密钥"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "source"
+        in: "path"
+        description: "gitlab或者github"
+        required: true
+        type: "string"
+      - name: "ns"
+        in: "query"
+        description: "namespace"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "获取仓库密钥成功"
+          schema:
+            $ref: "#/definitions/Secret"
+        400:
+          description: "获取仓库密钥失败"
+          schema:
+            $ref: "#/definitions/Error"                                  
+  /repos/{source}/webhook:
+    get:
+      tags:
+      - "repos"
+      summary: "获取webhook状态"
+      description: ""
+      operationId: "获取webhook状态"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "source"
+        in: "path"
+        description: "gitlab或者github"
+        required: true
+        type: "string"
+      - name: "ns"
+        in: "query"
+        description: "namespace"
+        required: true
+        type: "string"
+      - name: "bc"
+        in: "query"
+        description: "bcname"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "获取webhook状态"
+          schema:
+            $ref: "#/definitions/WebHook"
+        404:
+          description: "没有配置webhook"
+          schema:
+            $ref: "#/definitions/Error"                        
+        400:
+          description: "获取失败"
+          schema:
+            $ref: "#/definitions/Error"    
+    post:
+      tags:
+      - "repos"
+      summary: "加入webhook"
+      description: ""
+      operationId: "加入webhook"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "source"
+        in: "path"
+        description: "gitlab或者github"
+        required: true
+        type: "string"
+      - name: "ns"
+        in: "query"
+        description: "namespace"
+        required: true
+        type: "string"
+      - name: "bc"
+        in: "query"
+        description: "bcname"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "webhook对象"
+        required: true
+        schema:
+          $ref: "#/definitions/WebHookCreate"
+      responses:
+        200:
+          description: "创建webhook成功"
+          schema:
+            $ref: "#/definitions/WebHook"
+        400:
+          description: "创建webhook失败"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+      - "repos"
+      summary: "取消webhook状态"
+      description: ""
+      operationId: "取消webhook状态"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "source"
+        in: "path"
+        description: "gitlab或者github"
+        required: true
+        type: "string"
+      - name: "hookid"
+        in: "path"
+        description: "webhook id"
+        required: true
+        type: "integer"
+        format: "int32"  
+      - name: "ns"
+        in: "query"
+        description: "namespace"
+        required: true
+        type: "string"
+      - name: "bc"
+        in: "query"
+        description: "bcname"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "取消webhook状态成功"
+          schema:
+            $ref: "#/definitions/WebHook"
+        400:
+          description: "取消webhook状态失败"
+          schema:
+            $ref: "#/definitions/Error"    
+
+definitions:
+  Error:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
+  repolist:
+    type: "array"
+    items: 
+      $ref: "#/definitions/repo"
+  repo:
+    type: "object"
+    properties:
+      namespace:
+        type: "string"
+      personal:
+        type: "boolean"
+      Repos:
+        type: "array"
+        items: 
+          $ref: "#/definitions/Repositems"
+  branchlist:
+    type: "array"
+    items: 
+      $ref: "#/definitions/branch" 
+  branch:
+    type: "object"
+    properties:
+      Name:
+        type: "string"
+      CommitID:
+        type: "integer"
+        format: "int32"
+  Secret:
+    type: "object"
+    properties:
+      Ns:
+        type: "string"
+      User:
+        type: "string" 
+      Secret:
+        type: "string" 
+      Available:
+        type: "boolean"
+  WebHook:
+    type: "object"
+    properties:
+      ID:
+        type: "integer"
+        format: "int32"
+      Name:
+        type: "string"
+      Source:
+        type: "string" 
+      Ns:
+        type: "string" 
+      Repo:
+        type: "string"
+      Pid:
+        type: "integer"
+        format: "int32"
+      URL:
+        type: "string"   
+  WebHookCreate:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      url:
+        type: "string"
+  Repositems:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      clone_url:
+        type: "string"
+      name:
+        type: "string"
+      namespace:
+        type: "string"
+      private:
+        type: "boolean"
+      ssh_clone_url:
+        type: "string"
+
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

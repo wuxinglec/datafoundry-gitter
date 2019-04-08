@@ -38,12 +38,12 @@ type User struct {
 	Groups []string `json:"groups" protobuf:"bytes,4,rep,name=groups"`
 }
 
-func NewDataFoundryTokenClient(bearerToken string) *DataFoundryClient {
+func NewDataFoundryTokenClient(bearerToken string, cluster string) *DataFoundryClient {
 	// host = setBaseUrl(host)
 	client := &DataFoundryClient{
-		host:    dataFoundryHostAddr,
-		oapiURL: dataFoundryHostAddr + "/oapi/v1",
-		kapiURL: dataFoundryHostAddr + "/api/v1",
+		host:    cluster,
+		oapiURL: cluster + "/oapi/v1",
+		kapiURL: cluster + "/api/v1",
 	}
 
 	client.setBearerToken(bearerToken)

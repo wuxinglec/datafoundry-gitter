@@ -14,3 +14,10 @@ EXPOSE 7000
 RUN go build
 
 ENTRYPOINT ["./datafoundry-gitter"]
+
+
+
+
+
+
+

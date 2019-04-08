@@ -36,8 +36,9 @@ func authorize(handle httprouter.Handle) httprouter.Handle {
 		}
 
 		token := r.Header.Get("Authorization")
+		cluster := r.Header.Get("cluster")
 
-		dfClient := NewDataFoundryTokenClient(token)
+		dfClient := NewDataFoundryTokenClient(token, cluster)
 
 		user := new(User)
 		err := dfClient.OGet("/users/~", user)
