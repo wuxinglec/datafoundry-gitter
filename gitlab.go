@@ -339,7 +339,7 @@ func (lab *GitLab) CreateSecret(ns, name string) (*Secret, error) {
 
 func (lab *GitLab) CreateSecretWithSSHKey(ns, name string) (*Secret, error) {
 	token := lab.GetBearerToken()
-	dfClient := NewDataFoundryTokenClient(token)
+	dfClient := NewDataFoundryTokenClient(token, "null")
 
 	key, err := store.LoadSSHKeyGitlab(lab.User())
 	if err != nil {

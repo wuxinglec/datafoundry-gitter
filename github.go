@@ -244,7 +244,7 @@ func (hub *GitHub) CheckWebhook(ns, bc string) *WebHook {
 func (hub *GitHub) CreateSecret(ns, name string) (*Secret, error) {
 	token := hub.GetBearerToken()
 
-	dfClient := NewDataFoundryTokenClient(token)
+	dfClient := NewDataFoundryTokenClient(token, "null")
 
 	data := make(map[string]string)
 	data["password"] = hub.GetOauthToken()

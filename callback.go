@@ -12,6 +12,7 @@ import (
 // /github_oauth_cb. Called by github after authorization is granted
 func handleGitHubCallback(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	clog.Info("from", r.RemoteAddr, r.Method, r.URL.RequestURI(), r.Proto)
+	// cluster := r.Header.Get("cluster")
 
 	redirectURL, user, token, err := callbackValidate(w, r, oauthConf)
 	// token, err := exchangeToken(oauthConfGitLab, code)
